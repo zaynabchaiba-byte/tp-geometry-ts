@@ -14,7 +14,7 @@ export default class Point implements Geometry {
   }
 
   isEmpty(): boolean {
-    return this.coordinate.length == 0;
+    return this.coordinate.length==0;
   }
 
   getCoordinate(): Coordinate {
