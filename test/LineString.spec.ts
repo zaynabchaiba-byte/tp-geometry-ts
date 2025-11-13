@@ -38,6 +38,11 @@ describe("test LineString", () => {
 
     });
 
+    it("test clone", () => {
+    const l=new Point ([3.0,4.0]);
+
+    expect(l.clone()).to.deep.equal(l);
+    });
 
 });
 

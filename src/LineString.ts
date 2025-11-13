@@ -14,6 +14,14 @@ export default class LineString implements Geometry {
     }
   }
 
+  clone():LineString{
+    const points=new Array<Point>;
+    for(let point of this.points) {
+      points.push(point.clone())
+    }
+    return new LineString(points);
+  }
+
   isEmpty(): boolean {
     return this.points.length == 0;
   }
