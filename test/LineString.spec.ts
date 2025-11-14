@@ -2,6 +2,8 @@ import "mocha";
 import { expect } from "chai";
 import Point from "../src/Point";
 import LineString from '../src/LineString'
+import Envelope from "../src/Envelope";
+import EnvelopeBuilder from "../src/EnvelopeBuilder";
 
 describe("test LineString", () => {
 
@@ -43,6 +45,11 @@ describe("test LineString", () => {
 
     expect(l.clone()).to.deep.equal(l);
     });
+
+    it("test envelopeBuilder", () => {
+        
+    }
+)
 
 });
 
