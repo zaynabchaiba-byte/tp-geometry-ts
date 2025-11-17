@@ -1,12 +1,14 @@
+import AbstractGeometry from "./AbstractGeometry";
 import Coordinate from "./Coordinate";
-import Geometry from "./Geometry";
 import Envelope from "./Envelope";
 import EnvelopeBuilder from "./EnvelopeBuilder";
+import GeometryVisitor from "./GeometryVisitor";
 
-export default class Point implements Geometry {
+export default class Point extends AbstractGeometry {
   private coordinate?: Coordinate;
 
   constructor(coordinate?: Coordinate) {
+    super();
     this.coordinate = coordinate || [];
   }
 
@@ -15,7 +17,7 @@ export default class Point implements Geometry {
   }
 
   isEmpty(): boolean {
-    return this.coordinate.length==0;
+    return this.coordinate.length == 0;
   }
 
   getCoordinate(): Coordinate {
@@ -23,25 +25,25 @@ export default class Point implements Geometry {
   }
 
   translate(dx: number, dy: number) {
-    if (this.isEmpty()) {
-      return;
+    if (!this.isEmpty()) {
+      this.coordinate[0] += dx;
+      this.coordinate[1] += dy;
     }
-    this.coordinate[0] += dx;
-    this.coordinate[1] += dy;
   }
 
-  clone():Point{
+  clone(): Point {
     return new Point([...this.coordinate]);
   }
 
   getEnvelope(): Envelope {
     const builder = new EnvelopeBuilder();
-    if (!this.isEmpty()) {
-      builder.insert(this.coordinate);
-    }
-    return builder.Build();
+    this.accept(builder);
+    return builder.build();
   }
 
+  accept<T>(visitor: GeometryVisitor<T>): T {
+    return visitor.visitPoint(this);
+  }
 
   x(): number {
     return this.coordinate.length > 0 ? this.coordinate[0] : Number.NaN;
@@ -50,5 +52,4 @@ export default class Point implements Geometry {
   y(): number {
     return this.coordinate.length > 1 ? this.coordinate[1] : Number.NaN;
   }
-
 }

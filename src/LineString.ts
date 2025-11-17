@@ -1,50 +1,52 @@
-import Coordinate from "./Coordinate";
-import Geometry from "./Geometry";
+import AbstractGeometry from "./AbstractGeometry";
 import Point from "./Point";
 import Envelope from "./Envelope";
 import EnvelopeBuilder from "./EnvelopeBuilder";
+import GeometryVisitor from "./GeometryVisitor";
+import Geometry from "./Geometry";
 
-export default class LineString implements Geometry {
+export default class LineString extends AbstractGeometry {
   private points: Point[];
+
   constructor(points?: Point[]) {
+    super();
     this.points = points || [];
   }
 
-translate(dx: number, dy: number){
-    for(let point of this.points) {
+  translate(dx: number, dy: number) {
+    for (const point of this.points) {
       point.translate(dx, dy);
     }
   }
 
-clone():LineString{
-    const points=new Array<Point>;
-    for(let point of this.points) {
-      points.push(point.clone())
-    }
-    return new LineString(points);
+  clone(): LineString {
+    const pointsCopy = this.points.map(p => p.clone());
+    return new LineString(pointsCopy);
   }
 
-getEnvelope(): Envelope {
+  getEnvelope(): Envelope {
     const builder = new EnvelopeBuilder();
-    for (const p of this.points) {
-      builder.insert(p.getCoordinate());
-    }
-    return builder.Build();
-  }  
+    this.accept(builder);
+    return builder.build();
+  }
 
-isEmpty(): boolean {
+  accept<T>(visitor: GeometryVisitor<T>): T {
+    return visitor.visitLineString(this);
+  }
+
+  isEmpty(): boolean {
     return this.points.length == 0;
   }
+
   getType(): string {
     return "LineString";
   }
 
-getNumPoints(): number {
+  getNumPoints(): number {
     return this.points.length;
   }
 
-getPointN(n: number): Point {
+  getPointN(n: number): Point {
     return this.points[n];
   }
-
 }
